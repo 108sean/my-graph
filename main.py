@@ -76,8 +76,8 @@ if selected_movie:
     # 그래프 출력
     st.plotly_chart(fig1, use_container_width=True)
     
-    # 그래프 설명 작성할 빈 자리
-    st.info("💡 **이 그래프로 알 수 있는 것:** ____________________")
+    # [수정 적용] 그래프 1 설명 문구
+    st.info(f"💡 **이 그래프로 알 수 있는 것:** {selected_movie}의 개봉 초기 관객의 관심도와 관객 수 감소를 파악할 수 있다.")
 
 st.divider()
 
@@ -171,8 +171,8 @@ for _, row in top3_days.iterrows():
     )
 
 fig3.update_layout(
-    xaxis_title="Top 10 총 관객 수 (명)",
-    yaxis_title="날짜",
+    xaxis_title="날짜",
+    yaxis_title="Top 10 총 관객 수 (명)",
     hovermode="x unified"
 )
 
@@ -198,7 +198,7 @@ top10_summary = df.groupby('영화명').agg(
 # 총 관객 수 기준 상위 10개 영화 추출
 top10_summary = top10_summary.nlargest(10, '총관객수')
 
-# 관객 수 많은 영화가 위에 오도록 정렬 (Plotly 가로 막대는 아래서부터 그려지므로 오름차순 정렬)
+# 관객 수 많은 영화가 위에 오도록 정렬
 top10_summary = top10_summary.sort_values('총관객수', ascending=True)
 
 # 가로 막대그래프 생성
@@ -213,7 +213,7 @@ fig4 = px.bar(
     color_continuous_scale='Blues'
 )
 
-# 마우스 오버(툴팁) 레이아웃 설정 (10위권 차트인 일수 표시)
+# 마우스 오버(툴팁) 레이아웃 설정
 fig4.update_traces(
     hovertemplate="<b>영화명:</b> %{y}<br><b>총 관객수:</b> %{x:,}명<br><b>10위권 진입 일수:</b> %{customdata[0]}일<extra></extra>",
     customdata=top10_summary[['차트인일수']]
