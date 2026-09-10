@@ -76,8 +76,8 @@ if selected_movie:
     # 그래프 출력
     st.plotly_chart(fig1, use_container_width=True)
     
-    # 그래프 설명 문구 출력 위치
-    st.info(f"💡 **이 그래프로 알 수 있는 것:** {selected_movie}의 상영 기간 동안 개봉 초기 관객 집중도와 주말/평일 관객수 변화 추이를 한눈에 파악할 수 있습니다.")
+    # 그래프 설명 작성할 빈 자리
+    st.info("💡 **이 그래프로 알 수 있는 것:** ____________________")
 
 st.divider()
 
@@ -92,7 +92,7 @@ top5_movies = df.groupby('영화명')['일관객'].sum().nlargest(5).index.tolis
 # 상위 5개 영화 데이터 필터링
 top5_df = df[df['영화명'].isin(top5_movies)].sort_values('날짜')
 
-# 선 그래프 생성 (color='영화명'으로 색상 구분 및 범례 생성)
+# 선 그래프 생성 (color='영화명'으로 영화별 색상 구분)
 fig2 = px.line(
     top5_df,
     x='날짜',
@@ -112,14 +112,14 @@ fig2.update_layout(
     xaxis_title="날짜",
     yaxis_title="관객 수 (명)",
     hovermode="x unified",
-    legend_title_text="영화 제목 (클릭하여 켜기/끄기)"
+    legend_title_text="영화 제목 (클릭하여 토글)"
 )
 
 # 그래프 출력
 st.plotly_chart(fig2, use_container_width=True)
 
-# 그래프 설명 문구
-st.info("💡 **이 그래프로 알 수 있는 것:** 해당 기간 내 가장 흥행한 5개 영화의 일별 관객수 변화를 같은 시간선상에서 비교하여 흥행 피크 시점과 흥행 유지 기간의 차이를 파악할 수 있습니다.")
+# 그래프 설명 작성할 빈 자리
+st.info("💡 **이 그래프로 알 수 있는 것:** ____________________")
 
 st.divider()
 
