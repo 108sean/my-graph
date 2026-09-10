@@ -131,10 +131,10 @@ st.header("📌 구역 3: 날짜별 Top 10 관객 수 합계 추이")
 # 날짜별 10위권 일관객 합계 계산
 daily_total_df = df.groupby('날짜')['일관객'].sum().reset_index().sort_values('날짜')
 
-# 일관객 합계가 가장 컸던 상위 3개 날짜 추출
+# 일관객 합계가 가장 컸던 날 상위 3일 추출
 top3_days = daily_total_df.nlargest(3, '일관객')
 
-# 영역 그래프(Area Chart) 생성
+# 영역 그래프 생성
 fig3 = px.area(
     daily_total_df,
     x='날짜',
@@ -148,7 +148,7 @@ fig3.update_traces(
     hovertemplate="<b>날짜:</b> %{x|%Y-%m-%d}<br><b>Top 10 총 관객수:</b> %{y:,}명<extra></extra>"
 )
 
-# 관객 수 합계 Top 3 날짜에 에어로(화살표) 및 날짜/관객수 표기 주석 추가
+# 관객 수 합계 Top 3 날짜를 그래프 상에 주석(Annotation)으로 표시
 for _, row in top3_days.iterrows():
     date_str = row['날짜'].strftime('%Y-%m-%d')
     audience_count = row['일관객']
@@ -171,8 +171,8 @@ for _, row in top3_days.iterrows():
     )
 
 fig3.update_layout(
-    xaxis_title="날짜",
-    yaxis_title="Top 10 총 관객 수 (명)",
+    xaxis_title="Top 10 총 관객 수 (명)",
+    yaxis_title="날짜",
     hovermode="x unified"
 )
 
@@ -185,7 +185,56 @@ st.info("💡 **이 그래프로 알 수 있는 것:** ____________________")
 st.divider()
 
 # ==========================================
-# [구역 4] 추가 그래프 구역 (확장용)
+# [구역 4] 총 일관객 수 TOP 10 영화 (가로 막대그래프)
 # ==========================================
-st.header("📌 구역 4: (추가 예정 구역)")
+st.header("📌 구역 4: 기간 내 총 관객 수 TOP 10 영화")
+
+# 영화별 총 관객 수 및 10위권 차트인 일수 집계
+top10_summary = df.groupby('영화명').agg(
+    총관객수=('일관객', 'sum'),
+    차트인일수=('날짜', 'nunique')
+).reset_index()
+
+# 총 관객 수 기준 상위 10개 영화 추출
+top10_summary = top10_summary.nlargest(10, '총관객수')
+
+# 관객 수 많은 영화가 위에 오도록 정렬 (Plotly 가로 막대는 아래서부터 그려지므로 오름차순 정렬)
+top10_summary = top10_summary.sort_values('총관객수', ascending=True)
+
+# 가로 막대그래프 생성
+fig4 = px.bar(
+    top10_summary,
+    x='총관객수',
+    y='영화명',
+    orientation='h',
+    title="기간 내 총 관객 수 TOP 10 영화",
+    labels={'총관객수': '총 관객 수 (명)', '영화명': '영화 제목'},
+    color='총관객수',
+    color_continuous_scale='Blues'
+)
+
+# 마우스 오버(툴팁) 레이아웃 설정 (10위권 차트인 일수 표시)
+fig4.update_traces(
+    hovertemplate="<b>영화명:</b> %{y}<br><b>총 관객수:</b> %{x:,}명<br><b>10위권 진입 일수:</b> %{customdata[0]}일<extra></extra>",
+    customdata=top10_summary[['차트인일수']]
+)
+
+fig4.update_layout(
+    xaxis_title="총 관객 수 (명)",
+    yaxis_title="영화 제목",
+    coloraxis_showscale=False
+)
+
+# 그래프 출력
+st.plotly_chart(fig4, use_container_width=True)
+
+# 그래프 설명 작성할 빈 자리
+st.info("💡 **이 그래프로 알 수 있는 것:** ____________________")
+
+st.divider()
+
+# ==========================================
+# [구역 5] 추가 그래프 구역 (확장용)
+# ==========================================
+st.header("📌 구역 5: (추가 예정 구역)")
 st.caption("앞으로 새로운 시간 관련 그래프 분석 기능이 이 영역에 추가될 예정입니다.")
