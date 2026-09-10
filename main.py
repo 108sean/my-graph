@@ -76,7 +76,7 @@ if selected_movie:
     # 그래프 출력
     st.plotly_chart(fig1, use_container_width=True)
     
-    # [수정 적용] 그래프 1 설명 문구
+    # 그래프 1 설명 문구
     st.info(f"💡 **이 그래프로 알 수 있는 것:** {selected_movie}의 개봉 초기 관객의 관심도와 관객 수 감소를 파악할 수 있다.")
 
 st.divider()
@@ -118,8 +118,8 @@ fig2.update_layout(
 # 그래프 출력
 st.plotly_chart(fig2, use_container_width=True)
 
-# 그래프 설명 작성할 빈 자리
-st.info("💡 **이 그래프로 알 수 있는 것:** ____________________")
+# [수정 적용] 그래프 2 설명 문구
+st.info("💡 **이 그래프로 알 수 있는 것:** 상위 5개의 영화가 동시에 흥행했는지 서로 경쟁을 했는지 알 수 있다.")
 
 st.divider()
 
