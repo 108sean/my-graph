@@ -179,7 +179,7 @@ fig3.update_layout(
 # 그래프 출력
 st.plotly_chart(fig3, use_container_width=True)
 
-# [수정 적용] 그래프 3 설명 문구
+# 그래프 3 설명 문구
 st.info("💡 **이 그래프로 알 수 있는 것:** 개별 영화가 아닌 전체 영화관을 찾은 총 관객 수를 통해 1년 중 극장가가 가장 붐볐던 날을 알 수 있다.")
 
 st.divider()
@@ -228,8 +228,8 @@ fig4.update_layout(
 # 그래프 출력
 st.plotly_chart(fig4, use_container_width=True)
 
-# 그래프 설명 작성할 빈 자리
-st.info("💡 **이 그래프로 알 수 있는 것:** ____________________")
+# [수정 적용] 그래프 4 설명 문구
+st.info("💡 **이 그래프로 알 수 있는 것:** 기간 내 가장 많은 관객이 감상한 1위부터 10위까지의 영화들을 한눈에 비교할 수 있다.")
 
 st.divider()
 
