@@ -228,13 +228,73 @@ fig4.update_layout(
 # 그래프 출력
 st.plotly_chart(fig4, use_container_width=True)
 
-# [수정 적용] 그래프 4 설명 문구
+# 그래프 4 설명 문구
 st.info("💡 **이 그래프로 알 수 있는 것:** 기간 내 가장 많은 관객이 감상한 1위부터 10위까지의 영화들을 한눈에 비교할 수 있다.")
 
 st.divider()
 
 # ==========================================
-# [구역 5] 추가 그래프 구역 (확장용)
+# [구역 5] 월×요일별 일관객 합계 (히트맵)
 # ==========================================
-st.header("📌 구역 5: (추가 예정 구역)")
-st.caption("앞으로 새로운 시간 관련 그래프 분석 기능이 이 영역에 추가될 예정입니다.")
+st.header("📌 구역 5: 월×요일별 일관객 합계 히트맵")
+
+# 날짜 데이터에서 월과 요일 추출
+heatmap_df = df.copy()
+heatmap_df['월'] = heatmap_df['날짜'].dt.month.astype(str) + "월"
+heatmap_df['요일'] = heatmap_df['날짜'].dt.day_name()
+
+# 요일 한글 변환 및 정렬 순서 정의
+day_map = {
+    'Monday': '월요일',
+    'Tuesday': '화요일',
+    'Wednesday': '수요일',
+    'Thursday': '목요일',
+    'Friday': '금요일',
+    'Saturday': '토요일',
+    'Sunday': '일요일'
+}
+heatmap_df['요일'] = heatmap_df['요일'].map(day_map)
+
+# 월, 요일 기준 일관객 합계 피벗 테이블 생성
+pivot_df = heatmap_df.pivot_table(
+    index='월',
+    columns='요일',
+    values='일관객',
+    aggfunc='sum'
+).fillna(0)
+
+# 요일 순서 (월요일 ~ 일요일)
+day_order = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일']
+
+# 월 순서 (1월 ~ 12월)
+month_order = [f"{i}월" for i in range(1, 13)]
+
+# 존재하는 월/요일 컬럼에 맞게 재정렬
+pivot_df = pivot_df.reindex(index=[m for m in month_order if m in pivot_df.index], 
+                            columns=[d for d in day_order if d in pivot_df.columns])
+
+# 히트맵 생성 (관객이 많을수록 색이 진해지도록 'Blues' 스케일 적용)
+fig5 = px.imshow(
+    pivot_df,
+    labels=dict(x="요일", y="월", color="총 관객 수"),
+    x=pivot_df.columns,
+    y=pivot_df.index,
+    color_continuous_scale='Blues',
+    title="월×요일별 관객 수 분포 히트맵"
+)
+
+# 툴팁 및 레이아웃 설정
+fig5.update_traces(
+    hovertemplate="<b>%{y} %{x}</b><br>총 관객수: %{z:,}명<extra></extra>"
+)
+
+fig5.update_layout(
+    xaxis_title="요일",
+    yaxis_title="월"
+)
+
+# 그래프 출력
+st.plotly_chart(fig5, use_container_width=True)
+
+# 그래프 5 설명 문구
+st.info("💡 **이 그래프로 알 수 있는 것:** 각 월별로 어떤 요일에 관객 수가 집중되는지, 요일별·계절별 극장가 관객 동원 패턴을 한눈에 알 수 있다.")
